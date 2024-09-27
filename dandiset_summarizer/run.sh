@@ -1,0 +1,1 @@
+./dandiset_summarizer.py --dandiset-id $1 --dandiset-version draft --cache-dir $HOME/lindi_dandi_cache
