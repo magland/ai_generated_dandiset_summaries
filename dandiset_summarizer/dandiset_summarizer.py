@@ -65,10 +65,18 @@ def _create_cluster_summary_text(
 
     txt_lines.append('''
 Below is an auto-generated summary of the contents of a Dandiset.
-Please summarize the experiments and provide information on what data are available.
+Please summarize the experiments using the following outline:
+
+Start with the 6-digit Dandiset ID and name. Like this "000000: My Dandiset"
+
+Provide a general overview, mainly from metadata.
+
+Start getting into specifics of what's actually in the NWB files. Provide detail and you can even refer to the paths of the NWB objects. The reader is someone who wants to reuse or reanalyze the data.
+
 You should not refer to "Type X" since these are just internal labels used for communicating the breakdown of NWB files.
-Provide details that would be useful to someone who wants to reuse and reanalyze the dataset.
-The summaries are from representative NWB files for each type, so keep that in mind when making your description.
+
+The summaries are from representative NWB files for each type, so keep that in mind when making your description. So for example, the timestamp or session ID is not going to be representative of all NWB files of that type.
+
 Please provide your response in raw markdown suitable for copy/paste into a .md document.
 ''')
 
