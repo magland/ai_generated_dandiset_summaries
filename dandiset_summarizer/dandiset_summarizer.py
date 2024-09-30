@@ -4,21 +4,33 @@ from typing import List
 import os
 import json
 import time
+import urllib.request
 import click
+from pydantic import BaseModel
 import dandi.dandiarchive as da
 import lindi
+import openai
 
 
-def dandiset_summarizer(*, dandiset_id: str, dandiset_version: str, cache_dir: str):
+thisdir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(thisdir)
+
+def dandiset_summarizer(*, dandiset_id: str, dandiset_version: str, cache_dir: str, gpt_model: str):
+    dandiset_dir = f'{parent_dir}/dandisets/{dandiset_id}'
+    summary_md_fname = f'{dandiset_dir}/summary.md'
+    if os.path.exists(summary_md_fname):
+        raise Exception(f"Summary already exists at {summary_md_fname}.")
     dandiset_raw_metadata = _get_raw_metadata_for_dandiset(dandiset_id=dandiset_id)
 
     asset_objects = _get_asset_objects_for_dandiset(
-        dandiset_id=dandiset_id, cache_dir=cache_dir
+        dandiset_id=dandiset_id, dandiset_version=dandiset_version, cache_dir=cache_dir
     )
 
     neurodata_summaries = []
-    for asset in asset_objects:
+    for asset_index, asset in enumerate(asset_objects):
         lindi_fname = _get_local_lindi_file(
+            dandiset_id=dandiset_id,
+            asset_index=asset_index,
             asset_id=asset["identifier"],
             asset_path=asset["path"],
             url=asset["download_url"],
@@ -31,12 +43,13 @@ def dandiset_summarizer(*, dandiset_id: str, dandiset_version: str, cache_dir: s
     clusters = _cluster_summaries(neurodata_summaries)
 
     if len(clusters) > 8:
-        raise Exception(
-            f"Found {len(clusters)} clusters. This is too many to summarize."
-        )
+        print('Using only first 8 clusters...')
+        clusters = clusters[:8]
 
     representative_lindi_fnames = [
         _get_local_lindi_file(
+            dandiset_id=dandiset_id,
+            asset_index=cluster[0],
             asset_id=asset_objects[cluster[0]]["identifier"],
             asset_path=asset_objects[cluster[0]]["path"],
             url=asset_objects[cluster[0]]["download_url"],
@@ -44,16 +57,68 @@ def dandiset_summarizer(*, dandiset_id: str, dandiset_version: str, cache_dir: s
         )
         for cluster in clusters
     ]
-    txt = _create_cluster_summary_text(
+    print('Creating summary prompt...')
+    prompt = _create_cluster_summary_prompt(
         dandiset_id=dandiset_id,
         representative_lindi_fnames=representative_lindi_fnames,
         cluster_sizes=[len(cluster) for cluster in clusters],
         dandiset_raw_metadata=dandiset_raw_metadata,
     )
-    print(txt)
+    print('Creating summary...')
+    summary = _create_summary_from_prompt(prompt, gpt_model=gpt_model)
+
+    print('Writing summary...')
+    if not os.path.exists(dandiset_dir):
+        os.makedirs(dandiset_dir)
+    summary_prompt_fname = f'{dandiset_dir}/summary_prompt.md'
+    embeddings_fname = f'{dandiset_dir}/embeddings.json'
+    if os.path.exists(embeddings_fname):
+        os.remove(embeddings_fname)
+    with open(summary_prompt_fname, "w") as f:
+        f.write(prompt)
+    with open(summary_md_fname, "w") as f:
+        f.write(summary)
+
+    print(f"Summary written to {summary_md_fname}.")
 
 
-def _create_cluster_summary_text(
+def _create_summary_from_prompt(prompt: str, gpt_model: str):
+    OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+    if not OPENAI_API_KEY:
+        raise Exception("OPENAI_API_KEY environment variable not set.")
+    client = openai.Client(
+        api_key=OPENAI_API_KEY,
+    )
+    chat_completion = client.chat.completions.create(
+        model=gpt_model,
+        messages=[
+            {"role": "user", "content": prompt},
+        ],
+    )
+    resp = chat_completion.choices[0].message.content
+    if resp is None:
+        raise Exception("Failed to generate summary.")
+    resp = remove_markdown_code_block_markers(resp)
+    return resp
+
+
+def remove_markdown_code_block_markers(s: str):
+    lines = s.split("\n")
+    new_lines = []
+    in_markdown_code_block = False
+    for line in lines:
+        if line.startswith("```markdown"):
+            in_markdown_code_block = True
+            continue
+        elif line.startswith("```"):
+            if in_markdown_code_block:
+                in_markdown_code_block = False
+                continue
+        new_lines.append(line)
+    return "\n".join(new_lines)
+
+
+def _create_cluster_summary_prompt(
     *,
     dandiset_id: str,
     representative_lindi_fnames: List[str],
@@ -64,14 +129,11 @@ def _create_cluster_summary_text(
     txt_lines = []
 
     txt_lines.append('''
-Below is an auto-generated summary of the contents of a Dandiset.
-Please summarize the experiments using the following outline:
+Below is an auto-generated summary of the contents of a Dandiset. It includes both metadata and a summary of the contents of the NWB files.
 
-Start with the 6-digit Dandiset ID and name. Like this "000000: My Dandiset"
+Please summarize the experiment in a couple paragraphs in the style of a scientific abstract touching on the likely purpose of the experiment.
 
-Provide a general overview, mainly from metadata.
-
-Start getting into specifics of what's actually in the NWB files. Provide detail and you can even refer to the paths of the NWB objects. The reader is someone who wants to reuse or reanalyze the data.
+Then provide a list of up to ten keywords.
 
 You should not refer to "Type X" since these are just internal labels used for communicating the breakdown of NWB files.
 
@@ -189,7 +251,7 @@ def _compute_string_dist(s1: str, s2: str):
     return 1
 
 
-def _get_asset_objects_for_dandiset(dandiset_id: str, cache_dir: str):
+def _get_asset_objects_for_dandiset(dandiset_id: str, dandiset_version: str, cache_dir: str):
     if not os.path.exists(cache_dir):
         os.makedirs(cache_dir)
     if not os.path.exists(f"{cache_dir}/dandiset_asset_objects"):
@@ -204,7 +266,7 @@ def _get_asset_objects_for_dandiset(dandiset_id: str, cache_dir: str):
             print(f"Removing {fname}...")
             os.remove(fname)
     print(f"Creating {fname}...")
-    parsed_url = da.parse_dandi_url(f"https://dandiarchive.org/dandiset/{dandiset_id}")
+    parsed_url = da.parse_dandi_url(f"https://dandiarchive.org/dandiset/{dandiset_id}/{dandiset_version}/")
     asset_objects = []
     with parsed_url.navigate() as (client, dandiset, assets):
         if dandiset is None:
@@ -227,6 +289,9 @@ def _get_asset_objects_for_dandiset(dandiset_id: str, cache_dir: str):
                 "dandiset_id": dandiset_id,
             }
             asset_objects.append(asset)
+            if len(asset_objects) >= 100:
+                print("Stopping at 100 assets.")
+                break
     with open(fname, "w") as f:
         json.dump(asset_objects, f)
     return asset_objects
@@ -270,28 +335,170 @@ def _join(path: str, name: str):
     return f"{path}/{name}"
 
 
-def _get_local_lindi_file(*, asset_id: str, asset_path: str, url: str, cache_dir: str):
+def _get_local_lindi_file(*, dandiset_id: str, asset_id: str, asset_index: int, asset_path: str, url: str, cache_dir: str):
     if not os.path.exists(cache_dir):
         os.makedirs(cache_dir)
     if not os.path.exists(f"{cache_dir}/assets"):
         os.makedirs(f"{cache_dir}/assets")
     lindi_fname = f"{cache_dir}/assets/{asset_id}.lindi.json"
     if not os.path.exists(lindi_fname):
-        print(f"Creating {lindi_fname} for {asset_path}...")
-        with lindi.LindiH5pyFile.from_hdf5_file(url) as lindi_file:
-            lindi_file.write_lindi_file(lindi_fname)
+        file_key = f'dandi/dandisets/{dandiset_id}/assets/{asset_id}/nwb.lindi.json'
+        lindi_json_url = f'https://lindi.neurosift.org/{file_key}'
+        try:
+            print(f"[{dandiset_id} {asset_index}] Trying lindi download for {asset_path}...")
+            _download_lindi_file(url=lindi_json_url, lindi_fname=lindi_fname)
+        except Exception:
+            print(f"[{dandiset_id} {asset_index}] Creating lindi file for {asset_path}...")
+            with lindi.LindiH5pyFile.from_hdf5_file(url) as lindi_file:
+                lindi_file.write_lindi_file(lindi_fname)
     return lindi_fname
+
+
+def _download_lindi_file(*, url: str, lindi_fname: str):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+    }
+    req = urllib.request.Request(url, headers=headers)
+    with urllib.request.urlopen(req) as response:
+        with open(lindi_fname, "wb") as f:
+            f.write(response.read())
+
+
+def do_create_embeddings():
+    dirs = [
+        f"{parent_dir}/dandisets/{dandiset_id}"
+        for dandiset_id in os.listdir(f"{parent_dir}/dandisets")
+    ]
+    all_embeddings = {}
+    for dandiset_dir in dirs:
+        dandiset_id = os.path.basename(dandiset_dir)
+        summary_md_fname = f"{dandiset_dir}/summary.md"
+        if not os.path.exists(summary_md_fname):
+            print(f"Summary does not exist for {dandiset_id}.")
+            os.rename(dandiset_dir, f"{dandiset_dir}_rm")
+            continue
+        embeddings_fname = f"{dandiset_dir}/embeddings.json"
+        embeddings_obj = {}
+        if os.path.exists(embeddings_fname):
+            with open(embeddings_fname, "r") as f:
+                embeddings_obj = json.load(f)
+        # model_name = 'text-embedding-3-small'
+        model_name = 'text-embedding-3-large'
+        if model_name in embeddings_obj:
+            print(f"Embedding for {summary_md_fname} already exist.")
+        else:
+            print(f"Creating embedding for {summary_md_fname}...")
+            with open(summary_md_fname, "r") as f:
+                summary = f.read()
+            embedding0 = _create_embedding_for_summary(
+                summary,
+                model=model_name
+            )
+            x = {
+                model_name: embedding0,
+            }
+            with open(embeddings_fname, "w") as f:
+                json.dump(x, f)
+        with open(embeddings_fname, "r") as f:
+            embeddings_obj = json.load(f)
+        all_embeddings[dandiset_id] = embeddings_obj
+    with open(f"{parent_dir}/embeddings.json", "w") as f:
+        json.dump(all_embeddings, f, indent=2)
+
+
+def _create_embedding_for_summary(summary: str, *, model: str):
+    OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+    if not OPENAI_API_KEY:
+        raise Exception("OPENAI_API_KEY environment variable not set.")
+    client = openai.Client(
+        api_key=OPENAI_API_KEY,
+    )
+    response = client.embeddings.create(
+        input=summary,
+        model=model
+    )
+    return response.data[0].embedding
+
+
+def do_create_dandiset_summaries():
+    dandisets = fetch_all_dandisets()
+    for dandiset_index, dandiset in enumerate(dandisets):
+        dandiset_id = dandiset.dandiset_id
+        dandiset_version = dandiset.version
+        dandiset_dir = f"{parent_dir}/dandisets/{dandiset_id}"
+        if os.path.exists(f"{dandiset_dir}/summary.md"):
+            print(f"Summary already exists for {dandiset_id}.")
+            continue
+        print(f"Creating summary for {dandiset_id} ({dandiset_index + 1}/{len(dandisets)})...")
+        try:
+            dandiset_summarizer(
+                dandiset_id=dandiset_id,
+                dandiset_version=dandiset_version,
+                cache_dir=f"{parent_dir}/cache",
+                # gpt_model="gpt-4o-mini"
+                gpt_model="gpt-4o"
+            )
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            print(f"Failed to create summary for {dandiset_id}: {e}")
+            with open(f"{dandiset_dir}_error.txt", "w") as f:
+                f.write(str(e))
+
+
+class Dandiset(BaseModel):
+    dandiset_id: str
+    version: str
+
+
+def fetch_all_dandisets():
+    url = "https://api.dandiarchive.org/api/dandisets/?page=1&page_size=5000&ordering=-modified&draft=true&empty=false&embargoed=false"
+    with urllib.request.urlopen(url) as response:
+        X = json.loads(response.read())
+
+    dandisets: List[Dandiset] = []
+    for ds in X["results"]:
+        pv = ds["most_recent_published_version"]
+        dv = ds["draft_version"]
+        dandisets.append(
+            Dandiset(
+                dandiset_id=ds["identifier"],
+                version=pv["version"] if pv else dv["version"],
+            )
+        )
+
+    return dandisets
 
 
 @click.command()
 @click.option("--dandiset-id", required=True)
 @click.option("--dandiset-version", required=True)
 @click.option("--cache-dir", required=True)
-def main(dandiset_id: str, dandiset_version: str, cache_dir: str):
+def create_dandiset_summary(dandiset_id: str, dandiset_version: str, cache_dir: str):
     dandiset_summarizer(
-        dandiset_id=dandiset_id, dandiset_version=dandiset_version, cache_dir=cache_dir
+        dandiset_id=dandiset_id, dandiset_version=dandiset_version, cache_dir=cache_dir,
+        gpt_model="gpt-4o-mini"
     )
 
 
+@click.command()
+def create_dandiset_summaries():
+    do_create_dandiset_summaries()
+
+
+@click.command()
+def create_embeddings():
+    do_create_embeddings()
+
+
+@click.group()
+def cli():
+    pass
+
+
+cli.add_command(create_dandiset_summaries)
+cli.add_command(create_dandiset_summary)
+cli.add_command(create_embeddings)
+
 if __name__ == "__main__":
-    main()
+    cli()
