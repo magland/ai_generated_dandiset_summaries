@@ -1,0 +1,1 @@
+HTTPSConnectionPool(host='api.dandiarchive.org', port=443): Max retries exceeded with url: /api/dandisets/000363/versions/0.231012.2129/assets/445029d5-0023-4915-9d7d-25eb11451adc/download/ (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7c278dc9fe50>: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution'))

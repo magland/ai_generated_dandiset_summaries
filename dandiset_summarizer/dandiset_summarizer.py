@@ -16,6 +16,8 @@ thisdir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(thisdir)
 
 def dandiset_summarizer(*, dandiset_id: str, dandiset_version: str, cache_dir: str, gpt_model: str):
+    if not os.path.exists(parent_dir + '/dandisets'):
+        os.makedirs(parent_dir + '/dandisets')
     dandiset_dir = f'{parent_dir}/dandisets/{dandiset_id}'
     summary_md_fname = f'{dandiset_dir}/summary.md'
     if os.path.exists(summary_md_fname):
@@ -26,6 +28,7 @@ def dandiset_summarizer(*, dandiset_id: str, dandiset_version: str, cache_dir: s
         dandiset_id=dandiset_id, dandiset_version=dandiset_version, cache_dir=cache_dir
     )
 
+    print(f'Processing {len(asset_objects)} assets...')
     neurodata_summaries = []
     for asset_index, asset in enumerate(asset_objects):
         lindi_fname = _get_local_lindi_file(
@@ -42,9 +45,11 @@ def dandiset_summarizer(*, dandiset_id: str, dandiset_version: str, cache_dir: s
 
     clusters = _cluster_summaries(neurodata_summaries)
 
-    if len(clusters) > 8:
-        print('Using only first 8 clusters...')
-        clusters = clusters[:8]
+    if len(clusters) > 5:
+        print(f'Found {len(clusters)} clusters. Using the first 5.')
+        clusters = clusters[:5]
+    else:
+        print(f'Found {len(clusters)} clusters.')
 
     representative_lindi_fnames = [
         _get_local_lindi_file(
@@ -131,9 +136,11 @@ def _create_cluster_summary_prompt(
     txt_lines.append('''
 Below is an auto-generated summary of the contents of a Dandiset. It includes both metadata and a summary of the contents of the NWB files.
 
-Please summarize the experiment in a couple paragraphs in the style of a scientific abstract touching on the likely purpose of the experiment.
+Please summarize the experiment in two or three paragraphs in the style of a scientific abstract touching on the likely purpose of the experiment.
 
-Then provide a list of up to ten keywords.
+Then give a description of what data are available in the NWB files.
+
+Finally provide a list of up to ten keywords.
 
 You should not refer to "Type X" since these are just internal labels used for communicating the breakdown of NWB files.
 
@@ -308,7 +315,15 @@ def _get_raw_metadata_for_dandiset(dandiset_id: str):
 def _get_neurodata_summary(lindi_file: lindi.LindiH5pyFile):
     txt_lines = []
 
+    visited_paths = set()
+
     def process_group(path: str):
+        if path in visited_paths:
+            return
+        # check to see if number of groups is too large
+        if len(visited_paths) > 4000:
+            raise Exception("Too many groups in NWB file.")
+        visited_paths.add(path)
         grp = lindi_file[path]
         assert isinstance(grp, lindi.LindiH5pyGroup)
         if "neurodata_type" in grp.attrs:
@@ -371,6 +386,9 @@ def do_create_embeddings():
     ]
     all_embeddings = {}
     for dandiset_dir in dirs:
+        # check if directory
+        if not os.path.isdir(dandiset_dir):
+            continue
         dandiset_id = os.path.basename(dandiset_dir)
         summary_md_fname = f"{dandiset_dir}/summary.md"
         if not os.path.exists(summary_md_fname):
@@ -424,10 +442,19 @@ def do_create_dandiset_summaries():
     dandisets = fetch_all_dandisets()
     for dandiset_index, dandiset in enumerate(dandisets):
         dandiset_id = dandiset.dandiset_id
+        if dandiset_id == '000472':
+            # skip this one because it has an NWB file with a very large number of groups
+            print(f"Skipping Dandiset {dandiset_id} because it has an NWB file with a very large number of groups.")
+            continue
         dandiset_version = dandiset.version
         dandiset_dir = f"{parent_dir}/dandisets/{dandiset_id}"
         if os.path.exists(f"{dandiset_dir}/summary.md"):
             print(f"Summary already exists for {dandiset_id}.")
+            continue
+        if os.path.exists(f"{dandiset_dir}_error.txt"):
+            with open(f"{dandiset_dir}_error.txt", "r") as f:
+                err_txt = f.read()
+                print(f"Error file exists for {dandiset_id}: {err_txt}. Skipping.")
             continue
         print(f"Creating summary for {dandiset_id} ({dandiset_index + 1}/{len(dandisets)})...")
         try:
