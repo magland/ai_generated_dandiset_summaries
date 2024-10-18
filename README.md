@@ -15,6 +15,10 @@ bash run.sh 000953
 
 This will generate a prompt that you can then paste into a chatbot to generate a summary.
 
+## Semantic embeddings
+
+These summaries were then used to generate semantic embeddings, one vector per Dandiset, which is used to power the [semantic search on Neurosift](https://neurosift.app/?p=/dandi-query) (click "Search by abstract").
+
 ## How it works
 
 First, NWB files are clustered together based on the structure of their content. This dramatically reduces the number of unique NWB files that need to be summarized since Dandisets usually contain many similar files. The script then creates a text summary of representative files from each cluster. This summary includes meta data such as the experiment description as well as the paths of neurodata object, their neurodata types, descriptions and the shape and datatypes of the datasets. These are then glued together to form a single prompt that can be used to generate a summary using a chatbot.
