@@ -10,10 +10,22 @@ To generate a prompt for creating a summary:
 cd dandiset_summarizer
 
 # Replace 000953 with the Dandiset ID you want to summarize
-bash run.sh 000953
+python dandiset_summarizer/dandiset_summarizer.py create-dandiset-summary --dandiset-id 000953 --dandiset-version draft --cache-dir cache
 ```
 
-This will generate a prompt that you can then paste into a chatbot to generate a summary.
+This will create the summary in the `dandisets` directory, if it doesn't already exist.
+
+To generate summaries for all public Dandisets:
+
+```bash
+python dandiset_summarizer/dandiset_summarizer.py create-dandiset-summaries
+```
+
+To create embeddings for the summaries:
+
+```bash
+python dandiset_summarizer/dandiset_summarizer.py create-embeddings
+```
 
 ## Semantic embeddings
 

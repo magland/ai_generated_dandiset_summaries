@@ -26,20 +26,24 @@ def main():
 
     plt.figure(figsize=(6, 6))
     plt.scatter(embeddings_tsne[:, 0], embeddings_tsne[:, 1])
-    # for i, dandiset_id in enumerate(dandiset_ids):
-    #     plt.annotate(dandiset_id, (embeddings_tsne[i, 0], embeddings_tsne[i, 1]))
+    for i, dandiset_id in enumerate(dandiset_ids):
+        plt.annotate(dandiset_id, (embeddings_tsne[i, 0], embeddings_tsne[i, 1]))
+    plt.xlabel('t-SNE 1')
+    plt.ylabel('t-SNE 2')
+    # title
+    plt.title('t-SNE of AI embeddings of Dandisets')
     plt.show()
 
-    prompt = 'neural units for mouse licking behavior'
-    prompt_embedding = _compute_embedding(prompt, model=model_name)
+    # prompt = 'neural units for mouse licking behavior'
+    # prompt_embedding = _compute_embedding(prompt, model=model_name)
 
-    # cosine similarity
-    from sklearn.metrics.pairwise import cosine_similarity
-    similarities = cosine_similarity(prompt_embedding.reshape(1, -1), embeddings_array)
-    # order by similarity
-    order = np.argsort(similarities[0])[::-1]
-    for i in order:
-        print(dandiset_ids[i], similarities[0, i])
+    # # cosine similarity
+    # from sklearn.metrics.pairwise import cosine_similarity
+    # similarities = cosine_similarity(prompt_embedding.reshape(1, -1), embeddings_array)
+    # # order by similarity
+    # order = np.argsort(similarities[0])[::-1]
+    # for i in order:
+    #     print(dandiset_ids[i], similarities[0, i])
 
 
 def _compute_embedding(prompt: str, *, model: str):
