@@ -1,0 +1,284 @@
+
+Below is an auto-generated summary of the contents of a Dandiset. It includes both metadata and a summary of the contents of the NWB files.
+
+Please summarize the experiment in two or three paragraphs in the style of a scientific abstract touching on the likely purpose of the experiment.
+
+Then give a description of what data are available in the NWB files.
+
+Finally provide a list of up to ten keywords.
+
+You should not refer to "Type X" since these are just internal labels used for communicating the breakdown of NWB files.
+
+The summaries are from representative NWB files for each type, so keep that in mind when making your description. So for example, the timestamp or session ID is not going to be representative of all NWB files of that type.
+
+Please provide your response in raw markdown suitable for copy/paste into a .md document.
+
+
+id: DANDI:001250/draft
+name: Spike sorting biases in a detailed model of dense large-scale recordings
+contributor: [{'name': 'Laquitaine, Steeve', 'email': 'laquitainesteeve@gmail.com', 'roleName': ['dcite:ContactPerson'], 'schemaKey': 'Person', 'affiliation': [], 'includeInCitation': True}]
+description: Dataset for the Spike sorting biases in a detailed model of dense large-scale recordings paper.
+assetsSummary: {'species': [{'name': 'Rattus norvegicus - Norway rat', 'schemaKey': 'SpeciesType', 'identifier': 'http://purl.obolibrary.org/obo/NCBITaxon_10116'}], 'approach': [{'name': 'electrophysiological approach', 'schemaKey': 'ApproachType'}], 'schemaKey': 'AssetsSummary', 'dataStandard': [{'name': 'Neurodata Without Borders (NWB)', 'schemaKey': 'StandardsType', 'identifier': 'RRID:SCR_015242'}], 'numberOfBytes': 782105249386, 'numberOfFiles': 20, 'numberOfSubjects': 19, 'variableMeasured': ['ElectricalSeries', 'Units', 'ElectrodeGroup'], 'measurementTechnique': [{'name': 'multi electrode extracellular electrophysiology recording technique', 'schemaKey': 'MeasurementTechniqueType'}, {'name': 'spike sorting technique', 'schemaKey': 'MeasurementTechniqueType'}, {'name': 'surgical technique', 'schemaKey': 'MeasurementTechniqueType'}]}
+
+Dandiset 001250 has 17 NWB files.
+6 of these NWB files are of type 1.
+2 of these NWB files are of type 2.
+5 of these NWB files are of type 3.
+3 of these NWB files are of type 4.
+1 of these NWB files are of type 5.
+
+
+Here is a summary of the type 1 NWB files:
+  Group / (NWBFile) 
+  Group /acquisition/ElectricalSeriesRaw (ElectricalSeries) Raw acquired data
+  Dataset /acquisition/ElectricalSeriesRaw/electrodes (DynamicTableRegion) electrode_table_region | shape = (384,) | dtype = int64
+  file_create_date: ['2024-11-15T16:13:10.139469+01:00']
+  Group /general/devices/Device (Device) Ecephys probe. Automatically generated.
+  experiment_description: Biophysical simulation of neuropixels in the spontaneous regime. Background noise and gain are fitted to Marques-Smith dataset.
+  experimenter: ['Laquitaine Steeve']
+  Group /general/extracellular_ephys/0 (ElectrodeGroup) no description
+  Group /general/extracellular_ephys/0/device (Device) Ecephys probe. Automatically generated.
+  Group /general/extracellular_ephys/electrodes (DynamicTable) metadata about extracellular electrodes
+  Dataset /general/extracellular_ephys/electrodes/channel_name (VectorData) unique channel reference | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/group (VectorData) a reference to the ElectrodeGroup this electrode is a part of | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/group_name (VectorData) the name of the ElectrodeGroup this electrode is a part of | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/id (ElementIdentifiers)  | shape = (384,) | dtype = int64
+  Dataset /general/extracellular_ephys/electrodes/layers (VectorData) no description | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/location (VectorData) the location of channel within the subject e.g. brain region | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/rel_x (VectorData) rel_x | shape = (384,) | dtype = float64
+  Dataset /general/extracellular_ephys/electrodes/rel_y (VectorData) rel_y | shape = (384,) | dtype = float64
+  Dataset /general/extracellular_ephys/electrodes/rel_z (VectorData) rel_z | shape = (384,) | dtype = float64
+  institution: EPFL
+  keywords: ['Biophysical simulation' 'dense extracellular recordings' 'spike sorting']
+  lab: Blue Brain Project
+  related_publications: ['doi:']
+  session_id: 001
+  Group /general/subject (Subject) 
+  identifier: 6adf80f6-92f2-4286-a885-87b707365841
+  session_description: Biophysical simulation of neuropixels in the spontaneous regime. Background noise and gain are fitted to Marques-Smith dataset.
+  session_start_time: 2024-11-15T16:13:09.978345+01:00
+  timestamps_reference_time: 2024-11-15T16:13:09.978345+01:00
+  Group /units (Units) Autogenerated by neuroconv.
+  Dataset /units/id (ElementIdentifiers)  | shape = (1388,) | dtype = int64
+  Dataset /units/spike_times (VectorData) the spike times for each unit | shape = (987074,) | dtype = float64
+  Dataset /units/spike_times_index (VectorIndex) Index for VectorData 'spike_times' | shape = (1388,) | dtype = uint32
+  Dataset /units/unit_name (VectorData) Unique reference for each unit. | shape = (1388,) | dtype = object
+
+
+Here is a summary of the type 2 NWB files:
+  Group / (NWBFile) 
+  Group /acquisition/ElectricalSeriesRaw (ElectricalSeries) Raw acquired data
+  Dataset /acquisition/ElectricalSeriesRaw/electrodes (DynamicTableRegion) electrode_table_region | shape = (384,) | dtype = int64
+  file_create_date: ['2024-11-07T22:31:53.328612+01:00']
+  Group /general/devices/Device (Device) Ecephys probe. Automatically generated.
+  experiment_description: Biophysical simulation of neuropixels
+  experimenter: ['Laquitaine Steeve']
+  Group /general/extracellular_ephys/0 (ElectrodeGroup) no description
+  Group /general/extracellular_ephys/0/device (Device) Ecephys probe. Automatically generated.
+  Group /general/extracellular_ephys/electrodes (DynamicTable) metadata about extracellular electrodes
+  Dataset /general/extracellular_ephys/electrodes/channel_name (VectorData) unique channel reference | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/group (VectorData) a reference to the ElectrodeGroup this electrode is a part of | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/group_name (VectorData) the name of the ElectrodeGroup this electrode is a part of | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/id (ElementIdentifiers)  | shape = (384,) | dtype = int64
+  Dataset /general/extracellular_ephys/electrodes/location (VectorData) the location of channel within the subject e.g. brain region | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/rel_x (VectorData) rel_x | shape = (384,) | dtype = float64
+  Dataset /general/extracellular_ephys/electrodes/rel_y (VectorData) rel_y | shape = (384,) | dtype = float64
+  Dataset /general/extracellular_ephys/electrodes/rel_z (VectorData) rel_z | shape = (384,) | dtype = float64
+  institution: EPFL
+  keywords: ['Biophysical simulation']
+  lab: Blue Brain Project
+  related_publications: ['doi:']
+  session_id: 001
+  Group /general/subject (Subject) 
+  identifier: 54b427ca-fa2c-4e05-9b83-c0c93285e7a4
+  session_description: Biophysical simulation of neuropixels in the spontaneous regime
+  session_start_time: 2024-11-07T22:31:25.377444+01:00
+  timestamps_reference_time: 2024-11-07T22:31:25.377444+01:00
+  Group /units (Units) Autogenerated by neuroconv.
+  Dataset /units/dynamics_holding_current (VectorData) No description. | shape = (1388,) | dtype = float64
+  Dataset /units/dynamics_input_resistance (VectorData) No description. | shape = (1388,) | dtype = float64
+  Dataset /units/dynamics_resting_potential (VectorData) No description. | shape = (1388,) | dtype = float64
+  Dataset /units/dynamics_threshold_current (VectorData) No description. | shape = (1388,) | dtype = float64
+  Dataset /units/etype (VectorData) No description. | shape = (1388,) | dtype = object
+  Dataset /units/exc_mini_frequency (VectorData) No description. | shape = (1388,) | dtype = float64
+  Dataset /units/id (ElementIdentifiers)  | shape = (1388,) | dtype = int64
+  Dataset /units/inh_mini_frequency (VectorData) No description. | shape = (1388,) | dtype = float64
+  Dataset /units/layer (VectorData) No description. | shape = (1388,) | dtype = object
+  Dataset /units/layers (VectorData) No description. | shape = (1388,) | dtype = object
+  Dataset /units/me_combo (VectorData) No description. | shape = (1388,) | dtype = object
+  Dataset /units/model_template (VectorData) No description. | shape = (1388,) | dtype = object
+  Dataset /units/model_type (VectorData) No description. | shape = (1388,) | dtype = object
+  Dataset /units/morph_class (VectorData) No description. | shape = (1388,) | dtype = object
+  Dataset /units/morphology (VectorData) No description. | shape = (1388,) | dtype = object
+  Dataset /units/mtype (VectorData) No description. | shape = (1388,) | dtype = object
+  Dataset /units/orientation_w (VectorData) No description. | shape = (1388,) | dtype = float64
+  Dataset /units/orientation_x (VectorData) No description. | shape = (1388,) | dtype = float64
+  Dataset /units/orientation_y (VectorData) No description. | shape = (1388,) | dtype = float64
+  Dataset /units/orientation_z (VectorData) No description. | shape = (1388,) | dtype = float64
+  Dataset /units/region (VectorData) No description. | shape = (1388,) | dtype = object
+  Dataset /units/spike_times (VectorData) the spike times for each unit | shape = (987074,) | dtype = float64
+  Dataset /units/spike_times_index (VectorIndex) Index for VectorData 'spike_times' | shape = (1388,) | dtype = uint32
+  Dataset /units/synapse_class (VectorData) No description. | shape = (1388,) | dtype = object
+  Dataset /units/unit_name (VectorData) Unique reference for each unit. | shape = (1388,) | dtype = object
+  Dataset /units/x (VectorData) No description. | shape = (1388,) | dtype = float64
+  Dataset /units/y (VectorData) No description. | shape = (1388,) | dtype = float64
+  Dataset /units/z (VectorData) No description. | shape = (1388,) | dtype = float64
+
+
+Here is a summary of the type 3 NWB files:
+  Group / (NWBFile) 
+  Group /acquisition/ElectricalSeriesRaw (ElectricalSeries) Raw acquired data
+  Dataset /acquisition/ElectricalSeriesRaw/electrodes (DynamicTableRegion) electrode_table_region | shape = (128,) | dtype = int64
+  file_create_date: ['2024-11-07T21:57:51.544338+01:00']
+  Group /general/devices/Device (Device) Ecephys probe. Automatically generated.
+  experiment_description: Biophysical simulation of dense probe at depth 1
+  experimenter: ['Laquitaine Steeve']
+  Group /general/extracellular_ephys/0 (ElectrodeGroup) no description
+  Group /general/extracellular_ephys/0/device (Device) Ecephys probe. Automatically generated.
+  Group /general/extracellular_ephys/electrodes (DynamicTable) metadata about extracellular electrodes
+  Dataset /general/extracellular_ephys/electrodes/channel_name (VectorData) unique channel reference | shape = (128,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/group (VectorData) a reference to the ElectrodeGroup this electrode is a part of | shape = (128,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/group_name (VectorData) the name of the ElectrodeGroup this electrode is a part of | shape = (128,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/id (ElementIdentifiers)  | shape = (128,) | dtype = int64
+  Dataset /general/extracellular_ephys/electrodes/location (VectorData) the location of channel within the subject e.g. brain region | shape = (128,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/rel_x (VectorData) rel_x | shape = (128,) | dtype = float64
+  Dataset /general/extracellular_ephys/electrodes/rel_y (VectorData) rel_y | shape = (128,) | dtype = float64
+  Dataset /general/extracellular_ephys/electrodes/rel_z (VectorData) rel_z | shape = (128,) | dtype = float64
+  institution: EPFL
+  keywords: ['Biophysical simulation']
+  lab: Blue Brain Project
+  related_publications: ['doi:']
+  session_id: 003
+  Group /general/subject (Subject) 
+  identifier: a0bf1f46-85bd-4e8e-9d9c-a71d5eb32949
+  session_description: Biophysical simulation of dense probe at depth 1in the spontaneous regime
+  session_start_time: 2024-11-07T21:57:22.998435+01:00
+  timestamps_reference_time: 2024-11-07T21:57:22.998435+01:00
+  Group /units (Units) Autogenerated by neuroconv.
+  Dataset /units/id (ElementIdentifiers)  | shape = (287,) | dtype = int64
+  Dataset /units/spike_times (VectorData) the spike times for each unit | shape = (41717,) | dtype = float64
+  Dataset /units/spike_times_index (VectorIndex) Index for VectorData 'spike_times' | shape = (287,) | dtype = uint16
+  Dataset /units/unit_name (VectorData) Unique reference for each unit. | shape = (287,) | dtype = object
+
+
+Here is a summary of the type 4 NWB files:
+  Group / (NWBFile) 
+  Group /acquisition/ElectricalSeriesRaw (ElectricalSeries) Raw acquired data
+  Dataset /acquisition/ElectricalSeriesRaw/electrodes (DynamicTableRegion) electrode_table_region | shape = (384,) | dtype = int64
+  file_create_date: ['2024-11-27T16:10:30.032317+01:00']
+  Group /general/devices/Device (Device) Ecephys probe. Automatically generated.
+  experiment_description: Biophysical simulation of neuropixels in the spontaneous regime for the disconnected circuit. Background noise and gain are same as the non-disconnected circuit.
+  experimenter: ['Laquitaine Steeve']
+  Group /general/extracellular_ephys/0 (ElectrodeGroup) no description
+  Group /general/extracellular_ephys/0/device (Device) Ecephys probe. Automatically generated.
+  Group /general/extracellular_ephys/electrodes (DynamicTable) metadata about extracellular electrodes
+  Dataset /general/extracellular_ephys/electrodes/channel_name (VectorData) unique channel reference | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/group (VectorData) a reference to the ElectrodeGroup this electrode is a part of | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/group_name (VectorData) the name of the ElectrodeGroup this electrode is a part of | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/id (ElementIdentifiers)  | shape = (384,) | dtype = int64
+  Dataset /general/extracellular_ephys/electrodes/layers (VectorData) no description | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/location (VectorData) the location of channel within the subject e.g. brain region | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/rel_x (VectorData) rel_x | shape = (384,) | dtype = float64
+  Dataset /general/extracellular_ephys/electrodes/rel_y (VectorData) rel_y | shape = (384,) | dtype = float64
+  Dataset /general/extracellular_ephys/electrodes/rel_z (VectorData) rel_z | shape = (384,) | dtype = float64
+  institution: EPFL
+  keywords: ['Biophysical simulation' 'dense extracellular recordings' 'spike sorting']
+  lab: Blue Brain Project
+  related_publications: ['doi:']
+  session_id: 001
+  Group /general/subject (Subject) 
+  identifier: 310ef481-5cc5-4d93-86f1-50c5b6ddec7d
+  session_description: Biophysical simulation of neuropixels in the spontaneous regime for the disconnected circuit. Background noise and gain are same as the non-disconnected circuit.
+  session_start_time: 2024-11-27T16:10:29.565881+01:00
+  timestamps_reference_time: 2024-11-27T16:10:29.565881+01:00
+  Group /units (Units) Autogenerated by neuroconv.
+  Dataset /units/dynamics_holding_current (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/dynamics_input_resistance (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/dynamics_resting_potential (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/dynamics_threshold_current (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/etype (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/exc_mini_frequency (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/id (ElementIdentifiers)  | shape = (937,) | dtype = int64
+  Dataset /units/inh_mini_frequency (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/layer (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/layers (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/me_combo (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/model_template (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/model_type (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/morph_class (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/morphology (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/mtype (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/orientation (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/orientation_w (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/orientation_x (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/orientation_y (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/orientation_z (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/region (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/spike_times (VectorData) the spike times for each unit | shape = (251237,) | dtype = float64
+  Dataset /units/spike_times_index (VectorIndex) Index for VectorData 'spike_times' | shape = (937,) | dtype = uint32
+  Dataset /units/synapse_class (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/unit_name (VectorData) Unique reference for each unit. | shape = (937,) | dtype = object
+  Dataset /units/x (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/y (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/z (VectorData) No description. | shape = (937,) | dtype = float64
+
+
+Here is a summary of the type 5 NWB files:
+  Group / (NWBFile) 
+  Group /acquisition/ElectricalSeriesRaw (ElectricalSeries) Raw acquired data
+  Dataset /acquisition/ElectricalSeriesRaw/electrodes (DynamicTableRegion) electrode_table_region | shape = (384,) | dtype = int64
+  file_create_date: ['2024-11-27T14:51:14.576203+01:00']
+  Group /general/devices/Device (Device) Ecephys probe. Automatically generated.
+  experiment_description: Biophysical simulation of neuropixels in disconnected circuit in the spontaneous regime
+  experimenter: ['Laquitaine Steeve']
+  Group /general/extracellular_ephys/0 (ElectrodeGroup) no description
+  Group /general/extracellular_ephys/0/device (Device) Ecephys probe. Automatically generated.
+  Group /general/extracellular_ephys/electrodes (DynamicTable) metadata about extracellular electrodes
+  Dataset /general/extracellular_ephys/electrodes/channel_name (VectorData) unique channel reference | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/group (VectorData) a reference to the ElectrodeGroup this electrode is a part of | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/group_name (VectorData) the name of the ElectrodeGroup this electrode is a part of | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/id (ElementIdentifiers)  | shape = (384,) | dtype = int64
+  Dataset /general/extracellular_ephys/electrodes/location (VectorData) the location of channel within the subject e.g. brain region | shape = (384,) | dtype = object
+  Dataset /general/extracellular_ephys/electrodes/rel_x (VectorData) rel_x | shape = (384,) | dtype = float64
+  Dataset /general/extracellular_ephys/electrodes/rel_y (VectorData) rel_y | shape = (384,) | dtype = float64
+  Dataset /general/extracellular_ephys/electrodes/rel_z (VectorData) rel_z | shape = (384,) | dtype = float64
+  institution: EPFL
+  keywords: ['Biophysical simulation']
+  lab: Blue Brain Project
+  related_publications: ['doi:']
+  session_id: 001
+  Group /general/subject (Subject) 
+  identifier: 8efb06b3-f293-40bf-b69c-27a1512953c3
+  session_description: Biophysical simulation of neuropixels in disconnected circuit in the spontaneous regime
+  session_start_time: 2024-11-27T14:50:44.967734+01:00
+  timestamps_reference_time: 2024-11-27T14:50:44.967734+01:00
+  Group /units (Units) Autogenerated by neuroconv.
+  Dataset /units/dynamics_holding_current (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/dynamics_input_resistance (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/dynamics_resting_potential (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/dynamics_threshold_current (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/etype (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/exc_mini_frequency (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/id (ElementIdentifiers)  | shape = (937,) | dtype = int64
+  Dataset /units/inh_mini_frequency (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/layer (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/layers (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/me_combo (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/model_template (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/model_type (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/morph_class (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/morphology (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/mtype (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/orientation (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/orientation_w (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/orientation_x (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/orientation_y (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/orientation_z (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/region (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/spike_times (VectorData) the spike times for each unit | shape = (251237,) | dtype = float64
+  Dataset /units/spike_times_index (VectorIndex) Index for VectorData 'spike_times' | shape = (937,) | dtype = uint32
+  Dataset /units/synapse_class (VectorData) No description. | shape = (937,) | dtype = object
+  Dataset /units/unit_name (VectorData) Unique reference for each unit. | shape = (937,) | dtype = object
+  Dataset /units/x (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/y (VectorData) No description. | shape = (937,) | dtype = float64
+  Dataset /units/z (VectorData) No description. | shape = (937,) | dtype = float64
